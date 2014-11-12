@@ -1,0 +1,23 @@
+{
+	"id": "nodebb-plugin-wow",
+	"name": "WoW Guild Integration",
+	"description": "WoW Guild Integration plugin for NodeBB.",
+	"url": "https://github.com/Schamper/nodebb-plugin-wow",
+	"library": "./library.js",
+	"hooks": [
+		{ "hook": "static:app.load", "method": "load" },
+		{ "hook": "filter:admin.header.build", "method": "addNavigation" },
+
+		{ "hook": "filter:register.build", "method": "addRegistrationField" },
+		{ "hook": "filter:register.check", "method": "checkRegistration" },
+		{ "hook": "filter:user.custom_fields", "method": "addCustomFields" },
+		{ "hook": "action:user.create", "method": "userCreated" },
+
+		{ "hook": "filter:users.get", "method": "modifyUserData" }
+	],
+	"scripts": [
+		"public/js/wow.js"
+	],
+	"templates": "./templates",
+	"minver": "0.5.1"
+}
