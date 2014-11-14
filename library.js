@@ -288,7 +288,7 @@
 						winston.error('[' + pjson.name + '] ' + err);
 					}
 					winston.info('[' + pjson.name + '] Updated ' + count + ' users.');
-					callback(err, count);
+					if (callback) callback(err, count);
 				});
 			});
 		});
