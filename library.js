@@ -194,10 +194,10 @@
 	WoW.modifyUserData = function(users, callback) {
 		var uids = [], index = {}, uid;
 		for (var i = 0, l = users.length; i < l; i++) {
-			uid = users[i].uid;
-
 			// Don't try to grab wow data for guests, or if wow data is already present for this user
-			if (uid != undefined && !users[i]['wow_name']) {
+			if (users[i] != undefined && users[i].uid != undefined && !users[i]['wow_name']) {
+				uid = users[i].uid;
+
 				if (uids.indexOf(uid) === -1) {
 					uids.push('user:' + uid);
 				}
