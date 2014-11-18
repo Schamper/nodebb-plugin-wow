@@ -64,15 +64,15 @@
 			'#FFFFFF', '#C41F3B', '#0070DE', '#69CCF0', '#9482C9', '#00FF96', '#FF7D0A']
 	};
 
-	WoW.load = function(app, middleware, controllers, callback) {
+	WoW.load = function(data, callback) {
 		function renderAdmin(req, res, next) {
 			Groups.list({ showSystemGroups: false, removeEphemeralGroups: true }, function(err, result) {
 				res.render(Config.plugin.id + '/admin', { groups: result });
 			});
 		}
 
-		app.get('/admin' + Config.plugin.route, middleware.admin.buildHeader, renderAdmin);
-		app.get('/api/admin' + Config.plugin.route, renderAdmin);
+		data.router.get('/admin' + Config.plugin.route, data.middleware.admin.buildHeader, renderAdmin);
+		data.router.get('/api/admin' + Config.plugin.route, renderAdmin);
 
 		AdminSockets[Config.plugin.id] = Config.sockets;
 		PluginSockets[Config.plugin.id] = WoW.sockets;
@@ -85,12 +85,10 @@
 			if (oldVersion < Config.plugin.version) {
 				Config.global.set('version', Config.plugin.version);
 				Config.global.persist(function() {
-					Upgrade.doUpgrade(oldVersion, Config.plugin.version, function() {
-						callback(null, app, middleware, controllers);
-					});
+					Upgrade.doUpgrade(oldVersion, Config.plugin.version, callback);
 				});
 			} else {
-				callback(null, app, middleware, controllers);
+				callback();
 			}
 		});
 	};

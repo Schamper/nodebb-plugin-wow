@@ -25,5 +25,8 @@
 	"dependencies": {
 		"battlenet-api": "~0.4.7",
 		"cron": "~1.0.5"
+	},
+	"nbbpm": {
+		"compatibility": "^0.6.0"
 	}
 }
