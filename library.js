@@ -103,7 +103,7 @@
 		callback(null, custom_header);
 	};
 
-	WoW.addRegistrationField = function(req, res, data, callback) {
+	WoW.addRegistrationField = function(data, callback) {
 		var realm = Config.global.get('variables.realm'),
 			charHTML = '' +
 				'<input class="form-control" type="text" name="' + Config.registrationIds.char + '" id="' + Config.registrationIds.char + '" autocorrect="off" autocapitalize="off" />',
@@ -121,18 +121,18 @@
 				}
 			];
 
-		data.regFormEntry = data.regFormEntry.concat(fields);
+		data.templateData.regFormEntry = data.templateData.regFormEntry.concat(fields);
 
-		callback(null, req, res, data);
+		callback(null, data);
 	};
 
-	WoW.checkRegistration = function(req, res, userData, callback) {
-		var charName = userData[Config.registrationIds.char].trim(),
+	WoW.checkRegistration = function(data, callback) {
+		var charName = data.userData[Config.registrationIds.char].trim(),
 			realm = Config.global.get('variables.realm'),
 			apiKey = Config.global.get('variables.apiKey');
 
 		if (charName.length === 0 || realm === '' || apiKey === '') {
-			return callback(null, req, res, userData);
+			return callback(null, data);
 		}
 
 		api.character.guild({
@@ -140,25 +140,25 @@
 			name: charName
 		}, function(err, characterResult) {
 			if (err || !characterResult.name) {
-				return callback("Unknown error", req, res, userData);
+				return callback(new Error("Unknown error"), data);
 			}
 
 			if (characterResult.status && characterResult.reason) {
-				return callback(characterResult.reason, req, res, userData);
+				return callback(characterResult.reason, data);
 			}
 
-			userData.wow_name = characterResult.name;
-			userData.wow_thumbnail = characterResult.thumbnail;
-			userData.wow_class = characterResult.class;
-			userData.wow_class_name = Config.classInfo.names[characterResult.class];
-			userData.wow_class_color = Config.classInfo.colors[characterResult.class];
-			userData.wow_achievement_points = characterResult.achievementPoints;
-			userData.wow_realm = characterResult.realm;
+			data.userData.wow_name = characterResult.name;
+			data.userData.wow_thumbnail = characterResult.thumbnail;
+			data.userData.wow_class = characterResult.class;
+			data.userData.wow_class_name = Config.classInfo.names[characterResult.class];
+			data.userData.wow_class_color = Config.classInfo.colors[characterResult.class];
+			data.userData.wow_achievement_points = characterResult.achievementPoints;
+			data.userData.wow_realm = characterResult.realm;
 			if (characterResult.guild) {
-				userData.wow_guild = characterResult.guild.name;
+				data.userData.wow_guild = characterResult.guild.name;
 			}
 
-			return callback(null, req, res, userData);
+			return callback(null, data);
 		});
 	};
 
